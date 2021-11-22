@@ -18,8 +18,8 @@ import { CoordinateFormatterService } from '../../services/coordinate-formatter.
 
   ::ng-deep .ol-scale-line, ::ng-deep .ol-scale-line-inner {
       background-color: transparent;
-      border-color: var(--text-color);
-      color: var(--text-color);
+      border-color: white;
+      color: white;
       font-size: inherit;
       bottom: auto;
   }

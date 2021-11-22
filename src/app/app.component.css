@@ -29,4 +29,8 @@ footer {
 }
 
 
+:host ::ng-deep .mat-tab-label {
+    min-width: 50px;
+  }
 
+ 

@@ -1,9 +1,45 @@
 <header>
-  <div class="title"> Modulo Geoportal ACC</div>
+  <div class="title" style="color: white;"> Modulo Geoportal ACC</div>
 </header>
 <main>
   <div class="left-bar">
+
+    <div id="logos">
+      <img style="padding-left: 55px;padding-bottom: 15px;padding-top: 15px;" src="../assets/imgs/acc.png" height="70px" alt="">
+  </div>
+
+  
+  
+
+
+
+    <mat-tab-group animationDuration="0ms" mat-align-tabs="center">
+      <mat-tab>
+          <ng-template mat-tab-label>
+              <mat-icon class="example-tab-icon">layers</mat-icon>
+          </ng-template>
+          <app-layers></app-layers>
+      </mat-tab>
+      
+      <mat-tab>
+        <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">travel_explore</mat-icon>
+        </ng-template>
+        <app-filters></app-filters>
+    </mat-tab>
     
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+          <mat-icon class="example-tab-icon">extension icon</mat-icon>
+      </ng-template>
+      <app-options></app-options>
+  </mat-tab>
+    
+  </mat-tab-group>
+
+ 
+  
   </div>
   <div class="map-container">
     <app-map [map]="map"></app-map>
@@ -11,5 +47,5 @@
 </main>
 <footer>
   <app-scaleline [map]="map"></app-scaleline>
-  <app-mouse-position [map]="map" positionTemplate="{x}, {y} m"></app-mouse-position>
+  <app-mouse-position [map]="map" positionTemplate="{x}, {y}"></app-mouse-position>
 </footer>

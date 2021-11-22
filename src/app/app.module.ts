@@ -7,15 +7,26 @@ import { MapComponent } from './components/map/map.component';
 import { ScalelineComponent } from './components/scaleline/scaleline.component';
 import { MousePositionComponent } from './components/mouse-position/mouse-position.component';
 
+import { MaterialModule } from './share/material.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { LayersComponent } from './components/layers/layers.component';
+import { FiltersComponent } from './components/filters/filters.component';
+import { OptionsComponent } from './components/options/options.component';
+
 @NgModule({
   declarations: [
     AppComponent,
     MapComponent,
     ScalelineComponent,
-    MousePositionComponent
+    MousePositionComponent,
+    LayersComponent,
+    FiltersComponent,
+    OptionsComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    BrowserAnimationsModule,
+    MaterialModule
   ],
   providers: [DecimalPipe],
   bootstrap: [AppComponent]
