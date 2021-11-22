@@ -4,9 +4,11 @@ import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 
-// import proj4 from 'proj4';
+import prj4 from 'proj4'
+import {register} from 'ol/proj/proj4';
 
-// proj4.defs("EPSG:28992","+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000  +ellps=bessel  +towgs84=565.040,49.910,465.840,-0.40939,0.35971,-1.86849,4.0772 +units=m +no_defs");
+prj4.defs("EPSG:9377","+proj=tmerc +lat_0=4.0 +lon_0=-73.0 +k=0.9992 +x_0=5000000 +y_0=2000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
+register(prj4);
 
 
 @Component({
@@ -21,9 +23,9 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.map = new Map({
       view: new View({
-        center: [-74,5],
-        zoom: 9,
-        projection: 'EPSG:4326',
+        center: [4800000,2100000],
+        zoom: 10,
+        projection: 'EPSG:9377',
       }),
       layers: [
         new TileLayer({
