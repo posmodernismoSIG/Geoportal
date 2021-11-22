@@ -3,8 +3,8 @@ body {
     font-family: 'Roboto';
     color: var(--text-color);
     margin: 0;
-    --header-color: #D1DFB7;
-    --sidebar-color: #FAE6BE;
-    --text-color: black;
+    --header-color: #0071BA;
+    --sidebar-color: white;
+    --text-color: white;
 }
 

@@ -1,3 +1,5 @@
+
+
 # OpenlayersAngular
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.2.4.
@@ -25,3 +27,10 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+
+# Referencias
+
+1. https://dev.to/camptocamp-geo/openlayers-in-an-angular-application-mn1 
+2. https://medium.com/runic-software/a-simple-guide-to-openlayers-in-angular-b10f6feb3df1 
+

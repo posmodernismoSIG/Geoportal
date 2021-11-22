@@ -16,8 +16,8 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.map = new Map({
       view: new View({
-        center: [0, 0],
-        zoom: 1,
+        center: [0,0],
+        zoom: 4,
       }),
       layers: [
         new TileLayer({
