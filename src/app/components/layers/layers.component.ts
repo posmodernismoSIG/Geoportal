@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-layers',
@@ -8,6 +8,21 @@ import { Component, OnInit } from '@angular/core';
 export class LayersComponent implements OnInit {
 
   panelOpenState = false;
+
+  //List of Layers ACC for select
+  checkboxesLayersList = [
+    {
+      id: 'C000',
+      label: 'Predios',
+      isChecked: false
+    },
+    {
+      id: 'C001',
+      label: 'Construcciones',
+      isChecked: false
+    }
+  ]
+
 
   constructor() { }
 
