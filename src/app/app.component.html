@@ -7,39 +7,31 @@
     <div id="logos">
       <img style="padding-left: 55px;padding-bottom: 15px;padding-top: 15px;" src="../assets/imgs/acc.png" height="70px" alt="">
   </div>
-
-  
-  
-
-
-
-    <mat-tab-group animationDuration="0ms" mat-align-tabs="center">
+  <!-- componet Menu -->
+  <mat-tab-group animationDuration="0ms" mat-align-tabs="center">
+      <!-- componet Layers -->
       <mat-tab>
           <ng-template mat-tab-label>
               <mat-icon class="example-tab-icon">layers</mat-icon>
           </ng-template>
-          <app-layers></app-layers>
+          <app-layers (selectLayers)="selectLayers($event)"></app-layers>
       </mat-tab>
-      
+      <!-- componet Filters -->
       <mat-tab>
         <ng-template mat-tab-label>
             <mat-icon class="example-tab-icon">travel_explore</mat-icon>
         </ng-template>
         <app-filters></app-filters>
     </mat-tab>
-    
-
+    <!-- componet Options -->
     <mat-tab>
       <ng-template mat-tab-label>
           <mat-icon class="example-tab-icon">extension icon</mat-icon>
       </ng-template>
       <app-options></app-options>
   </mat-tab>
-    
   </mat-tab-group>
-
- 
-  
+  <!-- componet Map -->
   </div>
   <div class="map-container">
     <app-map [map]="map"></app-map>

@@ -7,8 +7,10 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 })
 export class LayersComponent implements OnInit {
 
+  //Send List of Layers ACC select for User
+  @Output() selectLayers = new EventEmitter();
+  // Material Panel
   panelOpenState = false;
-
   //List of Layers ACC for select
   checkboxesLayersList = [
     {
@@ -23,10 +25,15 @@ export class LayersComponent implements OnInit {
     }
   ]
 
-
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+   //Emit List of Layers ACC select for User to Component Home-Geoportal
+   changeSelection() {
+     console.log(this.checkboxesLayersList)
+    this.selectLayers.emit(this.checkboxesLayersList);
   }
 
 }

@@ -12,6 +12,7 @@ import prj4 from 'proj4'
 import {register} from 'ol/proj/proj4';
 prj4.defs("EPSG:9377","+proj=tmerc +lat_0=4.0 +lon_0=-73.0 +k=0.9992 +x_0=5000000 +y_0=2000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
 register(prj4);
+// import toEPSG4326 from 'ol/proj/epsg4326';
 
 @Component({
   selector: 'app-root',
@@ -21,8 +22,11 @@ register(prj4);
 
 export class AppComponent implements OnInit {
 
+  //Layers Select of component Layers
+  selectLayersACC: any;
+  // Instance Map
   map: Map;
-
+  // Test Geojson
   geojson = {
     "type": "FeatureCollection",
     "features": [
@@ -58,6 +62,17 @@ export class AppComponent implements OnInit {
         }
       }
     ]
+  }
+
+  //Save value emit Object Layers  of component Layers
+  selectLayers(value: any) {
+    console.log(value)
+    this.selectLayersACC = value;
+    this.getTerrenoPredio("kdjf")
+    var bbox = this.map.getView().calculateExtent(this.map.getSize())
+    console.log(bbox)
+    // console.log(toEPSG4326(bbox))
+    
   }
 
   ngOnInit(): void {
@@ -178,4 +193,34 @@ export class AppComponent implements OnInit {
     this.map.addLayer(vectorLayer);
     this.map.getView().fit(vectorSource.getExtent());
   }
+
+
+  private getTerrenoPredio(points: string) {
+    console.log("jej")
+    // if (this.selectLayersACC[0]['isChecked'] && this.map.getZoom() > 14) {
+    //   this.connectionService.getTerrenoByBoundingBox(points)
+    //     .subscribe((response: any) => {
+    //       this.layerTerrenoPredio.clearLayers();
+    //       this.layerTerrenoPredio = L.geoJSON(response,
+    //         {
+    //           style: (feature) => ({
+    //             weight: 1.8,
+    //             opacity: 0.5,
+    //             color: '#9c7a08',
+    //             fillOpacity: 0,
+    //           }),
+    //           onEachFeature: (feature, layer) => (
+    //             layer.bindPopup(feature.properties.numero_predial)
+    //           ),
+    //         }
+
+    //       ).addTo(this.map);
+    //     });
+    // } else {
+    //   this.layerTerrenoPredio.clearLayers();
+    // }
+
+  }
+
+
 }
