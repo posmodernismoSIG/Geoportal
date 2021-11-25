@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { LayersService } from './services/layers.service'
 import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
@@ -7,6 +8,8 @@ import { Stroke, Style, Fill, Circle as CircleStyle  } from 'ol/style';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import GeoJSON from 'ol/format/GeoJSON';
+import * as proj from 'ol/proj'
+
 // Proj4
 import prj4 from 'proj4'
 import {register} from 'ol/proj/proj4';
@@ -64,15 +67,17 @@ export class AppComponent implements OnInit {
     ]
   }
 
+  constructor(private layersService: LayersService) {
+  }
+
   //Save value emit Object Layers  of component Layers
   selectLayers(value: any) {
-    console.log(value)
     this.selectLayersACC = value;
-    this.getTerrenoPredio("kdjf")
-    var bbox = this.map.getView().calculateExtent(this.map.getSize())
-    console.log(bbox)
-    // console.log(toEPSG4326(bbox))
-    
+    var bbox = this.map.getView().calculateExtent(this.map.getSize());
+    var point_ne = proj.transform( [ bbox[0], bbox[1] ], 'EPSG:9377', 'EPSG:4326');
+    var point_xy = proj.transform( [ bbox[2], bbox[3] ], 'EPSG:9377', 'EPSG:4326');
+    var bbox_all = point_ne.concat(point_xy);
+    this.getLayer(bbox_all)  
   }
 
   ngOnInit(): void {
@@ -195,31 +200,19 @@ export class AppComponent implements OnInit {
   }
 
 
-  private getTerrenoPredio(points: string) {
-    console.log("jej")
-    // if (this.selectLayersACC[0]['isChecked'] && this.map.getZoom() > 14) {
-    //   this.connectionService.getTerrenoByBoundingBox(points)
-    //     .subscribe((response: any) => {
-    //       this.layerTerrenoPredio.clearLayers();
-    //       this.layerTerrenoPredio = L.geoJSON(response,
-    //         {
-    //           style: (feature) => ({
-    //             weight: 1.8,
-    //             opacity: 0.5,
-    //             color: '#9c7a08',
-    //             fillOpacity: 0,
-    //           }),
-    //           onEachFeature: (feature, layer) => (
-    //             layer.bindPopup(feature.properties.numero_predial)
-    //           ),
-    //         }
-
-    //       ).addTo(this.map);
-    //     });
-    // } else {
-    //   this.layerTerrenoPredio.clearLayers();
-    // }
-
+  private getLayer(points: string) {
+    if (this.selectLayersACC[0]['isChecked'] == false && this.map.getView().getZoom() > 17) {
+      this.layersService.getLayerByBoundingBox(points, 'land', '800,700', this.map.getView().getZoom())
+      .subscribe((response: any) => {
+        if(response["success"]){
+          this.addVectorDataLayer(response["data"])
+        }else{
+          console.log('borrar layers')
+        }
+      });
+    }else{
+      console.log("borrar layers")
+    }
   }
 
 
