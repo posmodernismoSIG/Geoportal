@@ -4,11 +4,13 @@ import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
-import { Stroke, Style, Fill, Circle as CircleStyle  } from 'ol/style';
+import { Stroke, Style, Fill, Circle as CircleStyle, Text   } from 'ol/style';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import GeoJSON from 'ol/format/GeoJSON';
+import * as interaction from 'ol/interaction';
 import * as proj from 'ol/proj'
+
 
 // Proj4
 import prj4 from 'proj4'
@@ -80,9 +82,31 @@ export class AppComponent implements OnInit {
     this.getLayer(bbox_all)  
   }
 
+  selected = null;
+
+  source = new VectorSource({wrapX: false});
+
+  draw = new VectorLayer({
+    source: this.source,
+  });
+
   ngOnInit(): void {
     this.initilizeMap();
-    this.addVectorDataLayer(this.geojson);
+
+    
+    let select = new interaction.Select();
+    this.map.addInteraction(select);
+    select.on('select', function(e) {
+      
+      console.log(e.target.getFeatures())
+    })
+
+    let draw = new interaction.Draw({
+      source: this.source,
+      type: "Circle",
+    });
+    this.map.addInteraction(draw);
+
     
   }
 
@@ -95,8 +119,9 @@ export class AppComponent implements OnInit {
       }),
       layers: [
         new TileLayer({
-          source: new OSM(),
+          source: new OSM()
         }),
+        this.draw,
       ]
     });
   }
@@ -199,13 +224,70 @@ export class AppComponent implements OnInit {
     this.map.getView().fit(vectorSource.getExtent());
   }
 
+  addLayerData(geojson, layer, label) {
+    const styles = {
+      predio: new Style({
+        stroke: new Stroke({
+          color: 'yellow',
+          width: 1,
+        }),
+        text: new Text({
+          font: '20px Calibri',
+          placement: 'point',
+          fill: new Fill({
+            color: 'black'
+          })
+        }),
+        fill: new Fill({
+          color: 'rgba(255, 25, 0, 0.1)',
+        }),
+      }),
+    };
+    
+
+    const styleFunction = (feature) => {    
+      styles.predio.getText().setText(feature.get(label));
+      return styles[layer];
+    };
+
+    const vectorSource = new VectorSource({
+      features: [],
+    });
+    vectorSource.clear();
+    vectorSource.addFeatures(new GeoJSON({
+      defaultDataProjection: 'EPSG:4326',
+      featureProjection: 'EPSG:9377'
+    }).readFeatures(geojson));
+    
+    const vectorLayer = new VectorLayer({
+      source: vectorSource,
+      style: styleFunction,
+    });
+    if (this.map.getLayers().getLength() === 2) {
+      this.map.getLayers().getArray().pop();
+      
+    }
+    this.map.addLayer(vectorLayer);
+  }
+  
+
+ highlightStyle = new Style({
+    fill: new Fill({
+      color: 'rgba(255,255,255,0.7)',
+    }),
+    stroke: new Stroke({
+      color: '#3399CC',
+      width: 3,
+    }),
+  });
+
 
   private getLayer(points: string) {
     if (this.selectLayersACC[0]['isChecked'] == false && this.map.getView().getZoom() > 17) {
-      this.layersService.getLayerByBoundingBox(points, 'land', '800,700', this.map.getView().getZoom())
+      this.layersService.getLayerByBoundingBox(points, 'land', this.map.getSize(), this.map.getView().getZoom())
       .subscribe((response: any) => {
         if(response["success"]){
-          this.addVectorDataLayer(response["data"])
+          this.addLayerData(response["data"], 'predio', 'matricula_inmobiliaria')
         }else{
           console.log('borrar layers')
         }
@@ -213,6 +295,13 @@ export class AppComponent implements OnInit {
     }else{
       console.log("borrar layers")
     }
+
+
+  
+  
+    
+
+
   }
 
 
