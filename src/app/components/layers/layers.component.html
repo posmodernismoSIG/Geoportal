@@ -3,26 +3,32 @@
         <mat-expansion-panel-header>
             <mat-panel-title>
                 <h4>Capas de Información ACC</h4>
-                
             </mat-panel-title>
         </mat-expansion-panel-header>
-        <ul>
-            <li *ngFor="let layer of checkboxesLayersList">
-                <mat-checkbox [(ngModel)]="layer.isChecked" (change)="changeSelection()">{{layer.label}}
-                </mat-checkbox>
-            </li>
-        </ul>
+        <mat-card *ngIf="ifCardLayer">
+            <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+            {{messageResultLayer}}
+        </mat-card>
+        <br>
+        <!-- Card to show available layers -->
+        <mat-card> Bienvenido. <br> Seleccione las capas a visualizar:
+            <div *ngFor="let layer of layersList" class="list-layers">
+                <label>
+                  <input type="checkbox" value="{{layer.id}}" (change)="changeSelection($event)">
+                  {{layer.label}}
+                </label>
+              </div>
+        </mat-card>
+
     </mat-expansion-panel>
 
-    <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+    <!-- Section to Import data -->
+    <!-- <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
         <mat-expansion-panel-header>
             <mat-panel-title>
                 <h4>Importar Datos</h4>
             </mat-panel-title>
         </mat-expansion-panel-header>
-
-    </mat-expansion-panel>
-
-
+    </mat-expansion-panel> -->
 
 </mat-accordion>

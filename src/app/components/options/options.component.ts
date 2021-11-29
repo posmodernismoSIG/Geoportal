@@ -22,6 +22,8 @@ export class OptionsComponent implements OnInit {
       {value: 'geom-2', viewValue: 'Circle'},
     ];
 
+    message = "no"
+
   constructor() { }
 
   ngOnInit(): void {

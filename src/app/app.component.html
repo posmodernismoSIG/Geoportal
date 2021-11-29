@@ -14,7 +14,7 @@
           <ng-template mat-tab-label>
               <mat-icon class="example-tab-icon">layers</mat-icon>
           </ng-template>
-          <app-layers (selectLayers)="selectLayers($event)"></app-layers>
+          <app-layers (selectLayers)="selectLayers($event)" [messageResultLayer]="currentMessageResultLayer" [isLoading]="isLoadingLayerACC" [ifCardLayer]="ifCardLayerACC"></app-layers>
       </mat-tab>
       <!-- componet Filters -->
       <mat-tab>
