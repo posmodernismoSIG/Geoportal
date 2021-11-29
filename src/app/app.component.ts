@@ -94,6 +94,8 @@ export class AppComponent implements OnInit {
           );
         }
       } else {
+        this.vectorPredio.clear();
+        this.vectorConst.clear();
         this.isLoadingLayerACC = false;
         this.ifCardLayerACC = false;
       }
@@ -206,9 +208,7 @@ export class AppComponent implements OnInit {
       return styles[layer];
     };
 
-    vectorSource = new VectorSource({
-      features: [],
-    });
+  
       vectorSource.clear();
     vectorSource.addFeatures(
       new GeoJSON({
