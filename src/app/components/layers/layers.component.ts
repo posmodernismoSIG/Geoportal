@@ -18,7 +18,7 @@ export class LayersComponent implements OnInit, OnChanges  {
   //List of Layers ACC for select
   layersList = [
     {id: 0, label: 'Predios', isCheck: false, service_basename: 'land', service_label: ''},
-    {id: 1, label: 'Construcciones', isCheck: false, service_basename: 'land', service_label: ''},
+    {id: 1, label: 'Construcciones', isCheck: false, service_basename: 'building', service_label: ''},
   ];
   updateLayer = [];
 

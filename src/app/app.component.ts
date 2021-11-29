@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewChecked , AfterViewInit} from '@angular/core';
 import { LayersService } from './services/layers.service';
 import Map from 'ol/Map';
 import View from 'ol/View';
@@ -43,43 +43,60 @@ export class AppComponent implements OnInit {
 
   currentLayers = {};
 
-  constructor(private layersService: LayersService) {}
+  vectorPredio = new VectorSource({
+    features: [],
+  });
+
+  vectorConst = new VectorSource({
+    features: [],
+  });
+
+  constructor(private layersService: LayersService) {
+
+  
+  }
+
 
   // Display selected layers in component layers
   selectLayers(value: any) {
-
-    this.map
-
-    this.isLoadingLayerACC = true;
-    this.ifCardLayerACC = true;
-    this.currentMessageResultLayer = '';
-    var bbox = this.map.getView().calculateExtent(this.map.getSize());
-    var point_ne = proj.transform([bbox[0], bbox[1]], 'EPSG:9377', 'EPSG:4326');
-    var point_xy = proj.transform([bbox[2], bbox[3]], 'EPSG:9377', 'EPSG:4326');
-    var bbox_points = point_ne.concat(point_xy);
     this.selectLayersACC = value;
+    this.updateLayer();
+  }
 
-    if (this.selectLayersACC[0].isCheck || this.selectLayersACC[1].isCheck) {
-      if (this.selectLayersACC[0].isCheck) {
-        this.getLayer(
-          bbox_points,
-          this.selectLayersACC[0].service_basename,
-          this.selectLayersACC[0].service_label,
-          this.selectLayersACC[0].label,
-        );
+
+  updateLayer(){
+ 
+      this.isLoadingLayerACC = true;
+      this.ifCardLayerACC = true;
+      this.currentMessageResultLayer = '';
+      var bbox = this.map.getView().calculateExtent(this.map.getSize());
+      var point_ne = proj.transform([bbox[0], bbox[1]], 'EPSG:9377', 'EPSG:4326');
+      var point_xy = proj.transform([bbox[2], bbox[3]], 'EPSG:9377', 'EPSG:4326');
+      var bbox_points = point_ne.concat(point_xy);
+  
+      if (this.selectLayersACC[0].isCheck || this.selectLayersACC[1].isCheck) {
+        if (this.selectLayersACC[1].isCheck) {
+          this.getLayer(
+            bbox_points,
+            this.selectLayersACC[1].service_basename,
+            this.selectLayersACC[1].service_label,
+            this.selectLayersACC[1].label,
+            this.vectorConst
+          );
+        }
+        if (this.selectLayersACC[0].isCheck) {
+          this.getLayer(
+            bbox_points,
+            this.selectLayersACC[0].service_basename,
+            this.selectLayersACC[0].service_label,
+            this.selectLayersACC[0].label,
+            this.vectorPredio
+          );
+        }
+      } else {
+        this.isLoadingLayerACC = false;
+        this.ifCardLayerACC = false;
       }
-      if (this.selectLayersACC[1].isCheck) {
-        this.getLayer(
-          bbox_points,
-          this.selectLayersACC[1].service_basename,
-          this.selectLayersACC[1].service_label,
-          this.selectLayersACC[1].label,
-        );
-      }
-    } else {
-      this.isLoadingLayerACC = false;
-      this.ifCardLayerACC = false;
-    }
   }
 
   ngOnInit(): void {
@@ -94,11 +111,9 @@ export class AppComponent implements OnInit {
     let draw = new interaction.Draw({
       source: this.source,
       type: 'Circle',
-    });
-    // this.map.addInteraction(draw);
-
-  
+    });    
   }
+
 
   initilizeMap() {
     this.map = new Map({
@@ -109,9 +124,14 @@ export class AppComponent implements OnInit {
       }),
       layers: [new TileLayer({ source: new OSM() }), this.draw],
     });
+
+    this.map.on('moveend', function () {
+      console.log("je");
+    });
+
   }
 
-  private getLayer(points: string, service_layer, label, layer) {
+  private getLayer(points: string, service_layer, label, layer, vectorSource) {
     this.isLoadingLayerACC = true;
     this.ifCardLayerACC = true;
     this.layersService
@@ -123,17 +143,29 @@ export class AppComponent implements OnInit {
       )
       .subscribe((response: any) => {
         if (response['success']) {
-          this.addLayerData(response['data'], service_layer, label);
+          this.addLayerData(
+            response['data'],
+            service_layer,
+            label,
+            vectorSource
+          );
           this.isLoadingLayerACC = false;
           this.ifCardLayerACC = false;
         } else {
           this.isLoadingLayerACC = false;
-          this.currentMessageResultLayer = this.currentMessageResultLayer.concat('Ocurrio un error (' , response['message'],  ') con la capa ', layer, ' / ');
+          this.currentMessageResultLayer =
+            this.currentMessageResultLayer.concat(
+              'Ocurrio un error (',
+              response['message'],
+              ') con la capa ',
+              layer,
+              ' / '
+            );
         }
       });
   }
 
-  addLayerData(geojson, layer, label) {
+  addLayerData(geojson, layer, label, vectorSource) {
     const styles = {
       land: new Style({
         stroke: new Stroke({
@@ -148,7 +180,23 @@ export class AppComponent implements OnInit {
           }),
         }),
         fill: new Fill({
-          color: 'rgba(255, 25, 0, 0.1)',
+          color: 'rgba(255, 255, 0, 0.1)',
+        }),
+      }),
+      building: new Style({
+        stroke: new Stroke({
+          color: 'rgba(255, 205, 25)',
+          width: 1,
+        }),
+        text: new Text({
+          font: '20px Calibri',
+          placement: 'point',
+          fill: new Fill({
+            color: 'black',
+          }),
+        }),
+        fill: new Fill({
+          color: 'rgba(100, 25, 250, 0.8)',
         }),
       }),
     };
@@ -158,10 +206,10 @@ export class AppComponent implements OnInit {
       return styles[layer];
     };
 
-    const vectorSource = new VectorSource({
+    vectorSource = new VectorSource({
       features: [],
     });
-    vectorSource.clear();
+      vectorSource.clear();
     vectorSource.addFeatures(
       new GeoJSON({
         defaultDataProjection: 'EPSG:4326',
