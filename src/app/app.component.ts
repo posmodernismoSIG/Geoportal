@@ -29,31 +29,29 @@ register(prj4);
 export class AppComponent implements OnInit {
   //Layers Select of component Layers
   selectLayersACC: any;
+  layerSearchACC: any;
   // Instance Map
   map: Map;
   // Output to component layers
   currentMessageResultLayer: String;
   isLoadingLayerACC: Boolean;
   ifCardLayerACC: Boolean;
+  // Output properties land select
+  propertiersLand: any;
   // Sources for Draw Map
   source = new VectorSource({ wrapX: false });
   draw = new VectorLayer({
     source: this.source,
   });
-
   currentLayers = {};
-
   vectorPredio = new VectorSource({
     features: [],
   });
-
   vectorConst = new VectorSource({
     features: [],
   });
 
   constructor(private layersService: LayersService) {
-
-  
   }
 
 
@@ -63,9 +61,11 @@ export class AppComponent implements OnInit {
     this.updateLayer();
   }
 
+  layerSearch(value: any){
+   this.addLayerData(value, 'search', '', this.vectorPredio)
+  }
 
   updateLayer(){
- 
       this.isLoadingLayerACC = true;
       this.ifCardLayerACC = true;
       this.currentMessageResultLayer = '';
@@ -107,7 +107,11 @@ export class AppComponent implements OnInit {
     let select = new interaction.Select();
     this.map.addInteraction(select);
     select.on('select', function (e) {
-      console.log(e.target.getFeatures());
+      var features = e.target.getFeatures();
+      var properties = features["array_"][0]["values_"];
+      properties["matricula_inmobiliaria"] = features["array_"][0]["id_"];
+      this.propertiersLand = properties;
+      console.log(this.propertiersLand)
     });
     //// Allows to draw in Map
     let draw = new interaction.Draw({
@@ -185,9 +189,25 @@ export class AppComponent implements OnInit {
           color: 'rgba(255, 255, 0, 0.1)',
         }),
       }),
+      search: new Style({
+        stroke: new Stroke({
+          color: 'rgba(255, 05, 25)',
+          width: 1,
+        }),
+        text: new Text({
+          font: '20px Calibri',
+          placement: 'point',
+          fill: new Fill({
+            color: 'black',
+          }),
+        }),
+        fill: new Fill({
+          color: 'rgba(100, 5, 50, 0.8)',
+        }),
+      }),
       building: new Style({
         stroke: new Stroke({
-          color: 'rgba(255, 205, 25)',
+          color: 'rgba(25, 25, 25)',
           width: 1,
         }),
         text: new Text({
@@ -209,104 +229,6 @@ export class AppComponent implements OnInit {
     };
 
   
-      vectorSource.clear();
-    vectorSource.addFeatures(
-      new GeoJSON({
-        defaultDataProjection: 'EPSG:4326',
-        featureProjection: 'EPSG:9377',
-      }).readFeatures(geojson)
-    );
-
-    const vectorLayer = new VectorLayer({
-      source: vectorSource,
-      style: styleFunction,
-    });
-    if (this.map.getLayers().getLength() === 2) {
-      this.map.getLayers().getArray().pop();
-    }
-    this.map.addLayer(vectorLayer);
-  }
-
-  addVectorDataLayer(geojson) {
-    const image = new CircleStyle({
-      radius: 5,
-      fill: new Fill({
-        color: 'rgb(4, 11, 70)',
-      }),
-      stroke: new Stroke({ color: '#FF9C32', width: 2 }),
-    });
-
-    const styles = {
-      Point: new Style({
-        image,
-      }),
-      LineString: new Style({
-        stroke: new Stroke({
-          color: 'green',
-          width: 1,
-        }),
-      }),
-      MultiLineString: new Style({
-        stroke: new Stroke({
-          color: 'green',
-          width: 1,
-        }),
-      }),
-      MultiPoint: new Style({
-        image,
-      }),
-      MultiPolygon: new Style({
-        stroke: new Stroke({
-          color: 'yellow',
-          width: 1,
-        }),
-        fill: new Fill({
-          color: 'rgba(255, 255, 0, 0.1)',
-        }),
-      }),
-      Polygon: new Style({
-        stroke: new Stroke({
-          color: 'blue',
-          lineDash: [4],
-          width: 3,
-        }),
-        fill: new Fill({
-          color: 'rgba(0, 0, 255, 0.1)',
-        }),
-      }),
-      GeometryCollection: new Style({
-        stroke: new Stroke({
-          color: 'magenta',
-          width: 2,
-        }),
-        fill: new Fill({
-          color: 'magenta',
-        }),
-        image: new CircleStyle({
-          radius: 10,
-          fill: null,
-          stroke: new Stroke({
-            color: 'magenta',
-          }),
-        }),
-      }),
-      Circle: new Style({
-        stroke: new Stroke({
-          color: 'red',
-          width: 2,
-        }),
-        fill: new Fill({
-          color: 'rgba(255,0,0,0.2)',
-        }),
-      }),
-    };
-
-    const styleFunction = (feature) => {
-      return styles[feature.getGeometry().getType()];
-    };
-    const vectorSource = new VectorSource({
-      features: [],
-    });
     vectorSource.clear();
     vectorSource.addFeatures(
       new GeoJSON({
@@ -323,6 +245,10 @@ export class AppComponent implements OnInit {
       this.map.getLayers().getArray().pop();
     }
     this.map.addLayer(vectorLayer);
-    this.map.getView().fit(vectorSource.getExtent());
+    if (layer == 'search'){
+      this.map.getView().fit(vectorSource.getExtent());
+    }
   }
+
+
 }

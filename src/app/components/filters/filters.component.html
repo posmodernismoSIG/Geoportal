@@ -1,9 +1,36 @@
-<form class="example-form">
-    <mat-form-field class="example-full-width" >
-      <!-- <mat-icon matSuffix>search</mat-icon> -->
-      <input type="string" matInput placeholder="Buscar...">
-    </mat-form-field>
+<mat-accordion multi>
+<form  class="container-form" [formGroup]="checkoutForm" (ngSubmit)="searchLand()">
+  <mat-form-field appearance="fill">
+    <mat-label>Buscar...</mat-label>
+    <input matInput type="text" formControlName="value_search" />
+  </mat-form-field>
+  <br>
+  <button mat-raised-button color="primary"  type="submit">Consultar</button>
+</form>
 
-    <button mat-raised-button color="primary">Consultar</button>
-  </form>
-  
+
+<div class="container-filters">
+  <br>
+  <div *ngIf="result_geosearch">
+    <mat-card >
+        <mat-card-subtitle> Resultados: </mat-card-subtitle>
+        <mat-card-content> {{result_geosearch}}</mat-card-content>
+    </mat-card>
+</div>
+  <div >
+      <mat-card >
+          <mat-card-subtitle>Información Predio </mat-card-subtitle>
+          <mat-card-content>
+
+            {{propertiersLand}}
+              
+                <!-- <p>Numero predial Anterior: {{land.numero_predial_anterior}}</p>
+                <p>Area: {{land.properties.area}} </p>
+                <p>Area Construida: {{land.properties.area_construida}} </p>
+                <p>Destinacion Economica: {{land.properties.destinacion_economica}} </p>
+                <p>Nombre Predio: {{land.properties.direccion}} </p> -->
+          </mat-card-content>
+      </mat-card>
+  </div>
+</div>
+</mat-accordion>

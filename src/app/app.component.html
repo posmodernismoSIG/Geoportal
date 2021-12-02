@@ -21,7 +21,8 @@
         <ng-template mat-tab-label>
             <mat-icon class="example-tab-icon">travel_explore</mat-icon>
         </ng-template>
-        <app-filters></app-filters>
+        <app-filters (layerSearch)="layerSearch($event)" [propertiersLand]="propertiersLand"></app-filters>
+                
     </mat-tab>
     <!-- componet Options -->
     <mat-tab>

@@ -12,6 +12,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LayersComponent } from './components/layers/layers.component';
 import { FiltersComponent } from './components/filters/filters.component';
 import { OptionsComponent } from './components/options/options.component';
+import { FormsModule, ReactiveFormsModule }   from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,9 @@ import { OptionsComponent } from './components/options/options.component';
     BrowserModule,
     BrowserAnimationsModule,
     MaterialModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [DecimalPipe],
   bootstrap: [AppComponent]
