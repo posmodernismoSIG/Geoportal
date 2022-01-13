@@ -40,9 +40,10 @@ export class AppComponent implements OnInit {
   propertiersLand: any;
   // Sources for Draw Map
   source = new VectorSource({ wrapX: false });
-  draw = new VectorLayer({
-    source: this.source,
-  });
+  layer = new VectorLayer({ source: this.source, });
+  sourceDraw = new VectorSource({ wrapX: false });
+  layerDraw = new VectorLayer({ source: this.sourceDraw, });
+  
   currentLayers = {};
   vectorPredio = new VectorSource({
     features: [],
@@ -50,6 +51,8 @@ export class AppComponent implements OnInit {
   vectorConst = new VectorSource({
     features: [],
   });
+
+  geomFilter: string = 'clear';
 
   constructor(private layersService: LayersService) {
   }
@@ -63,6 +66,43 @@ export class AppComponent implements OnInit {
 
   layerSearch(value: any){
    this.addLayerData(value, 'search', '', this.vectorPredio)
+  }
+
+  currentFilter(value: any){
+    if (value == 'point' || value == 'polygon' || value == 'Circle' ){ 
+      this.geomFilter = value;
+      let draw = new interaction.Draw({
+        source: this.sourceDraw,
+        type: this.geomFilter,
+      }); 
+      this.map.addInteraction(draw);
+      draw.on('drawstart', function (e) {
+        // To do, delete de features
+      });
+    }
+    if(value == 'desactive'){
+      this.removeInteractions()
+    } 
+    if(value == 'clear'){
+      this.sourceDraw.clear()
+    }
+    if(value == 'consultar'){
+      console.log(this.sourceDraw.getFeatures())
+    }
+  }
+
+  removeFeaturesSource(){
+    console.log(this.sourceDraw)
+    this.sourceDraw.clear()
+  }
+
+  removeInteractions(){
+    // Remove all interations of interaction Draw
+    this.map.getInteractions().forEach((interation_active) => {
+      if (interation_active instanceof interaction.Draw){
+        this.map.removeInteraction(interation_active);
+      }
+    })
   }
 
   updateLayer(){
@@ -113,11 +153,9 @@ export class AppComponent implements OnInit {
       this.propertiersLand = properties;
       console.log(this.propertiersLand)
     });
-    //// Allows to draw in Map
-    let draw = new interaction.Draw({
-      source: this.source,
-      type: 'Circle',
-    });    
+
+
+      
   }
 
 
@@ -128,7 +166,7 @@ export class AppComponent implements OnInit {
         zoom: 10,
         projection: 'EPSG:9377',
       }),
-      layers: [new TileLayer({ source: new OSM() }), this.draw],
+      layers: [new TileLayer({ source: new OSM() }), this.layer, this.layerDraw],
     });
 
     this.map.on('moveend', function () {
